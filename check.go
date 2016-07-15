@@ -8,71 +8,88 @@ import (
 	"github.com/full360/health/log"
 )
 
-// Check is used to represent a single service check with consul, cloudwatch
+type serviceCheckConfig struct {
+	name      string
+	tag       string
+	namespace string
+	blockTime time.Duration
+	logger    *log.Logger
+}
+
+// service is used to represent a single service check with consul, cloudwatch
 // and a logger
-type Check struct {
+type serviceCheck struct {
 	consul *consul.Check
 	metric *cloudwatch.Metric
 	logger *log.Logger
 }
 
-// NewServiceCheck returns a new service check
-func NewServiceCheck(name, tag string, block time.Duration, logger *log.Logger) (*Check, error) {
-	consulConfig := consul.DefaultCheckConfig()
-	config := cloudwatch.DefaultMetricConfig()
-	if name != "" {
-		consulConfig.Service = name
-		config.Service.Name = name
+func defaultServiceCheck() *serviceCheckConfig {
+	return &serviceCheckConfig{
+		name:      "service",
+		tag:       "tag",
+		namespace: "microservices",
+		blockTime: 10 * time.Minute,
+		logger:    log.NewLogger(),
 	}
-	if tag != "" {
-		consulConfig.Tag = tag
-		config.Service.Env = tag
-	}
-	consulConfig.BlockTime = block
+}
 
-	metric := cloudwatch.NewMetric(config)
-
-	consul, err := consul.NewCheck(consulConfig)
+// newServiceCheck returns a new service check
+func newServiceCheck(svcConfig *serviceCheckConfig) (*serviceCheck, error) {
+	consul, err := consul.NewCheck(&consul.CheckConfig{
+		Service:     svcConfig.name,
+		Tag:         svcConfig.tag,
+		PassingOnly: true,
+		BlockTime:   svcConfig.blockTime,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	serviceCheck := &Check{
+	svcCheck := &serviceCheck{
 		consul: consul,
-		metric: metric,
-		logger: logger,
+		metric: cloudwatch.NewMetric(&cloudwatch.MetricConfig{
+			Name:      "service_monitoring",
+			Namespace: svcConfig.namespace,
+			Service: &cloudwatch.Service{
+				Name: svcConfig.name,
+				Env:  svcConfig.tag,
+			},
+			Value: 0,
+		}),
+		logger: svcConfig.logger,
 	}
-	return serviceCheck, nil
+	return svcCheck, nil
 }
 
-// LoopServiceCheck does an infinite loop calling serviceCheck
-func (c *Check) LoopServiceCheck() {
+// loopCheck does an infinite loop calling serviceCheck
+func (sc *serviceCheck) loopCheck() {
 	for {
-		err := c.serviceCheck()
+		err := sc.check()
 		if err != nil {
 			time.Sleep(10 * time.Second)
 		}
 	}
 }
 
-// serviceCheck checks if a service is healthy and posts that data to a
+// check checks if a service is healthy and posts that data to a
 // Cloudwatch metric based on the service name and environment
-func (c *Check) serviceCheck() error {
-	count, qm, err := c.consul.Healthy()
+func (sc *serviceCheck) check() error {
+	count, qm, err := sc.consul.Healthy()
 	if err != nil {
-		c.logger.Error("Could not retrieve service count from Consul: %v", err)
+		sc.logger.Error("Could not retrieve service count from Consul: %v", err)
 		return err
 	}
 	// debug logging for Consul request
-	c.logger.Debug("Consul Query metadata, Request Time: %s, Last Index: %d", qm.RequestTime, qm.LastIndex)
+	sc.logger.Debug("Consul Query metadata, Request Time: %s, Last Index: %d", qm.RequestTime, qm.LastIndex)
 	// Set the last response index as the wait index for the next request to
 	// successfully do a blocking query
-	c.consul.QueryOptions.WaitIndex = qm.LastIndex
-	c.logger.Info("Service count: %d, with name: %s and tag: %s", count, c.consul.Service, c.consul.Tag)
+	sc.consul.QueryOptions.WaitIndex = qm.LastIndex
+	sc.logger.Info("Service count: %d, with name: %s and tag: %s", count, sc.consul.Config.Service, sc.consul.Config.Tag)
 
-	_, err = c.metric.Put(float64(count))
+	_, err = sc.metric.Put(float64(count))
 	if err != nil {
-		c.logger.Error("Could not post metric to CloudWatch: %v", err)
+		sc.logger.Error("Could not post metric to CloudWatch: %v", err)
 		return err
 	}
 	return nil

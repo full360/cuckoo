@@ -10,18 +10,18 @@ import (
 )
 
 var (
-	version bool
-	debug   bool
-	service string
-	block   time.Duration
-	tag     string
+	version     bool
+	debug       bool
+	serviceName string
+	serviceTag  string
+	block       time.Duration
 )
 
 func init() {
 	flag.BoolVar(&version, "version", false, "print version and exit")
 	flag.BoolVar(&debug, "d", false, "enables debug logging mode")
-	flag.StringVar(&service, "service", "", "Name of the Service to check")
-	flag.StringVar(&tag, "tag", "", "Tag name of the Service to check")
+	flag.StringVar(&serviceName, "service", "", "Name of the Service to check")
+	flag.StringVar(&serviceTag, "tag", "", "Tag name of the Service to check")
 	flag.DurationVar(&block, "block", 10*time.Minute, "Consul blocking query time")
 
 	flag.Usage = func() {
@@ -37,11 +37,11 @@ func main() {
 		return
 	}
 
-	if service == "" {
+	if serviceName == "" {
 		usageAndExit("Please enter a Service", 0)
 	}
 
-	if tag == "" {
+	if serviceTag == "" {
 		usageAndExit("Please enter a Service Tag", 0)
 	}
 
@@ -51,11 +51,17 @@ func main() {
 		logger.SetLevel("debug")
 	}
 
-	check, err := NewServiceCheck(service, tag, block, logger)
+	svcCheck, err := newServiceCheck(&serviceCheckConfig{
+		name:      serviceName,
+		tag:       serviceTag,
+		namespace: "microservices",
+		blockTime: block,
+		logger:    logger,
+	})
 	if err != nil {
 		logger.Fatal("%v", err)
 	}
-	check.LoopServiceCheck()
+	svcCheck.loopCheck()
 }
 
 // usageAndExit prints the default usage flags and exits the application with
