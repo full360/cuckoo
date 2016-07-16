@@ -39,7 +39,7 @@ type Metric struct {
 
 // DefaultClientConfig sets the default metric configuration
 func DefaultMetricConfig() *MetricConfig {
-	config := &MetricConfig{
+	return &MetricConfig{
 		Name:      "service_monitoring",
 		Namespace: "microservices",
 		Service: &Service{
@@ -48,37 +48,34 @@ func DefaultMetricConfig() *MetricConfig {
 		},
 		Value: 0,
 	}
-	return config
 }
 
 // NewMetric returns a new metric
 func NewMetric(config *MetricConfig) *Metric {
-	session := NewSession(DefaultSessionConfig())
-	metric := &cloudwatch.PutMetricDataInput{
-		MetricData: []*cloudwatch.MetricDatum{
-			{
-				MetricName: aws.String(config.Name),
-				Dimensions: []*cloudwatch.Dimension{
-					{
-						Name:  aws.String("ServiceName"),
-						Value: aws.String(config.Service.Name),
-					},
-					{
-						Name:  aws.String("Environment"),
-						Value: aws.String(config.Service.Env),
-					},
-				},
-				Timestamp: aws.Time(time.Now().UTC()),
-				Unit:      aws.String("Count"),
-				Value:     aws.Float64(config.Value),
-			},
-		},
-		Namespace: aws.String(config.Namespace),
-	}
 	return &Metric{
-		cw:     session,
-		Data:   metric,
+		cw:     NewSession(DefaultSessionConfig()),
 		config: config,
+		Data: &cloudwatch.PutMetricDataInput{
+			MetricData: []*cloudwatch.MetricDatum{
+				{
+					MetricName: aws.String(config.Name),
+					Dimensions: []*cloudwatch.Dimension{
+						{
+							Name:  aws.String("ServiceName"),
+							Value: aws.String(config.Service.Name),
+						},
+						{
+							Name:  aws.String("Environment"),
+							Value: aws.String(config.Service.Env),
+						},
+					},
+					Timestamp: aws.Time(time.Now().UTC()),
+					Unit:      aws.String("Count"),
+					Value:     aws.Float64(config.Value),
+				},
+			},
+			Namespace: aws.String(config.Namespace),
+		},
 	}
 }
 
