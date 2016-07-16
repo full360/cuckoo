@@ -31,7 +31,7 @@ func defaultServiceCheck() *serviceCheckConfig {
 	return &serviceCheckConfig{
 		name:            "service",
 		tag:             "tag",
-		MetricName:      "service_monitoring",
+		metricName:      "service_monitoring",
 		metricNamespace: "microservices",
 		blockTime:       10 * time.Minute,
 		logger:          log.NewLogger(),
