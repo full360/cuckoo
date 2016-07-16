@@ -8,29 +8,33 @@ import (
 	"github.com/full360/health/log"
 )
 
+// serviceCheckConfig is used to represent the configuration of a service check
 type serviceCheckConfig struct {
-	name      string
-	tag       string
-	namespace string
-	blockTime time.Duration
-	logger    *log.Logger
+	name            string
+	tag             string
+	metricName      string
+	metricNamespace string
+	blockTime       time.Duration
+	logger          *log.Logger
 }
 
-// service is used to represent a single service check with consul, cloudwatch
-// and a logger
+// serviceCheck is used to represent a single service check with consul,
+// cloudwatch and a logger
 type serviceCheck struct {
 	consul *consul.Check
 	metric *cloudwatch.Metric
 	logger *log.Logger
 }
 
+// defaultServiceCheck returns a defaul service check config
 func defaultServiceCheck() *serviceCheckConfig {
 	return &serviceCheckConfig{
-		name:      "service",
-		tag:       "tag",
-		namespace: "microservices",
-		blockTime: 10 * time.Minute,
-		logger:    log.NewLogger(),
+		name:            "service",
+		tag:             "tag",
+		MetricName:      "service_monitoring",
+		metricNamespace: "microservices",
+		blockTime:       10 * time.Minute,
+		logger:          log.NewLogger(),
 	}
 }
 
@@ -49,8 +53,8 @@ func newServiceCheck(svcConfig *serviceCheckConfig) (*serviceCheck, error) {
 	svcCheck := &serviceCheck{
 		consul: consul,
 		metric: cloudwatch.NewMetric(&cloudwatch.MetricConfig{
-			Name:      "service_monitoring",
-			Namespace: svcConfig.namespace,
+			Name:      svcConfig.metricName,
+			Namespace: svcConfig.metricNamespace,
 			Service: &cloudwatch.Service{
 				Name: svcConfig.name,
 				Env:  svcConfig.tag,
@@ -72,8 +76,8 @@ func (sc *serviceCheck) loopCheck() {
 	}
 }
 
-// check checks if a service is healthy and posts that data to a
-// Cloudwatch metric based on the service name and environment
+// check checks if a service is healthy and posts that data to a Cloudwatch
+// metric based on the service name and environment
 func (sc *serviceCheck) check() error {
 	count, qm, err := sc.consul.Healthy()
 	if err != nil {
