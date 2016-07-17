@@ -34,7 +34,5 @@ func DefaultSessionConfig() *aws.Config {
 
 // NewSession creates and returns a cloudwatch Session session
 func NewSession(config *aws.Config) *CloudWatch {
-	currentSession := session.New(config)
-	session := cloudwatch.New(currentSession)
-	return &CloudWatch{Session: session}
+	return &CloudWatch{Session: cloudwatch.New(session.New(config))}
 }
