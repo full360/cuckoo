@@ -22,9 +22,9 @@ var (
 func init() {
 	flag.BoolVar(&version, "version", false, "print version and exit")
 	flag.BoolVar(&debug, "d", false, "enables debug logging mode")
-	flag.StringVar(&serviceName, "service", "", "Name of the Service to check")
-	flag.StringVar(&serviceTag, "tag", "", "Tag name of the Service to check")
-	flag.StringVar(&metricName, "metric-name", "service_monitoring", "CloudWatch metric name")
+	flag.StringVar(&serviceName, "service", "", "Consul name of the Service to check")
+	flag.StringVar(&serviceTag, "tag", "", "Consul tag of the Service to check")
+	flag.StringVar(&metricName, "metric-name", "service_monitoring", "CloudWatch metric data name")
 	flag.StringVar(&metricNamespace, "metric-namespace", "microservices", "CloudWatch metric namespace")
 	flag.DurationVar(&block, "block", 10*time.Minute, "Consul blocking query time")
 
