@@ -14,6 +14,7 @@ var (
 	debug           bool
 	serviceName     string
 	serviceTag      string
+	metricName      string
 	metricNamespace string
 	block           time.Duration
 )
@@ -23,7 +24,8 @@ func init() {
 	flag.BoolVar(&debug, "d", false, "enables debug logging mode")
 	flag.StringVar(&serviceName, "service", "", "Name of the Service to check")
 	flag.StringVar(&serviceTag, "tag", "", "Tag name of the Service to check")
-	flag.StringVar(&metricNamespace, "namespace", "microservices", "CloudWatch Namespace")
+	flag.StringVar(&metricName, "metric-name", "service_monitoring", "CloudWatch metric name")
+	flag.StringVar(&metricNamespace, "metric-namespace", "microservices", "CloudWatch metric namespace")
 	flag.DurationVar(&block, "block", 10*time.Minute, "Consul blocking query time")
 
 	flag.Usage = func() {
@@ -56,7 +58,7 @@ func main() {
 	svcCheck, err := newServiceCheck(&serviceCheckConfig{
 		name:            serviceName,
 		tag:             serviceTag,
-		metricName:      "service_monitoring",
+		metricName:      metricName,
 		metricNamespace: metricNamespace,
 		blockTime:       block,
 		logger:          logger,

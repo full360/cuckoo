@@ -7,6 +7,7 @@ type Consul struct {
 	Client *consulapi.Client
 }
 
+// DefaultClientConfig returns the default consul config
 func DefaultClientConfig() *consulapi.Config {
 	return consulapi.DefaultConfig()
 }
