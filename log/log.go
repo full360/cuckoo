@@ -3,20 +3,19 @@ package log
 import (
 	"fmt"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/Sirupsen/logrus"
 )
 
 type Logger struct {
-	Log *log.Logger
+	Log *logrus.Logger
 }
 
 func NewLogger() *Logger {
-	log := log.New()
-	return &Logger{Log: log}
+	return &Logger{Log: logrus.New()}
 }
 
 func (l *Logger) SetLevel(level string) {
-	lvl, err := log.ParseLevel(level)
+	lvl, err := logrus.ParseLevel(level)
 	if err != nil {
 		l.Fatal(`Not a valid level: "%s"`, level)
 	}
