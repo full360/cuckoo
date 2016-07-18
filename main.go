@@ -64,7 +64,7 @@ func main() {
 		logger:          logger,
 	})
 	if err != nil {
-		logger.Fatal("%v", err)
+		logger.Fatal(fmt.Sprintf("%v", err))
 	}
 	svcCheck.loopCheck()
 }
