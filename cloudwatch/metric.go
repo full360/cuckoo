@@ -11,7 +11,7 @@ import (
 type Service struct {
 	// Name of the service
 	Name string
-	// Env of the service, could also be represented by the tag
+	// Env of the service, could also be represented by the Consul tag
 	Env string
 }
 

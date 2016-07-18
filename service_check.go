@@ -66,7 +66,7 @@ func newServiceCheck(svcConfig *serviceCheckConfig) (*serviceCheck, error) {
 	return svcCheck, nil
 }
 
-// loopCheck does an infinite loop calling serviceCheck
+// loopCheck does an infinite loop calling check
 func (sc *serviceCheck) loopCheck() {
 	for {
 		err := sc.check()
