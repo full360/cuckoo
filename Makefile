@@ -31,7 +31,7 @@ tools:
 
 docker:
 	docker build -t full360/cuckoo:latest . \
-	&& docker tag -f full360/cuckoo:latest full360/health:$(VERSION) \
+	&& docker tag -f full360/cuckoo:latest full360/cuckoo:$(VERSION) \
 	&& docker push full360/cuckoo
 
 .PHONY: all local build dist format tools docker
