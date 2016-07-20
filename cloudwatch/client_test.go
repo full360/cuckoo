@@ -6,6 +6,10 @@ import (
 )
 
 func TestDefaultSessionConfig(t *testing.T) {
+	// Cleanup before the test
+	os.Unsetenv("AWS_DEFAULT_REGION")
+	os.Unsetenv("AWS_REGION")
+
 	cases := []struct {
 		expected  string
 		export    bool
@@ -19,10 +23,10 @@ func TestDefaultSessionConfig(t *testing.T) {
 			exportVal: "",
 		},
 		{
-			expected:  "ap-southeast-1",
+			expected:  "ap-southeast-2",
 			export:    true,
 			exportVar: "AWS_DEFAULT_REGION",
-			exportVal: "ap-southeast-1",
+			exportVal: "ap-southeast-2",
 		},
 		{
 			expected:  "us-west-2",
