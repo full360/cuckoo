@@ -41,8 +41,8 @@ which Cuckoo will post metrics too. The default region is `us-east-1`
 - `AWS_DEFAULT_REGION`
 - `AWS_REGION`
 
-If Consul is not running in localhost and Cuckoo needs to connect to a different
-one, use the default consul address variable `CONSUL_HTTP_ADDR`
+If Consul is not running in localhost use the default consul address variable
+`CONSUL_HTTP_ADDR` to set for a reachable address
 
 [consul]: https://www.consul.io
 [cloudwatch]: https://aws.amazon.com/cloudwatch/
