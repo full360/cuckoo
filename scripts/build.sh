@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-#
+
+# This script was taken from Hashicorp Consul and modified to feed this project
+# needs. https://github.com/hashicorp/consul/blob/master/scripts/build.sh
 # This script builds the application from source for multiple platforms.
 set -e
 
@@ -16,8 +18,8 @@ GIT_COMMIT=$(git rev-parse HEAD)
 GIT_DIRTY=$(test -n "`git status --porcelain`" && echo "+CHANGES" || true)
 
 # Determine the arch/os combos we're building for
-XC_ARCH=${XC_ARCH:-"amd64"}
-XC_OS=${XC_OS:-"darwin linux"}
+XC_ARCH=${XC_ARCH:-"386 amd64 arm"}
+XC_OS=${XC_OS:-"solaris darwin freebsd linux windows"}
 
 # Delete the old dir
 echo "==> Removing old directory..."

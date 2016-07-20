@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+# This script was taken from Hashicorp Consul and modified to feed this project
+# needs. https://github.com/hashicorp/consul/blob/master/scripts/dist.sh
 set -e
 
 # Get the version from the command line.
