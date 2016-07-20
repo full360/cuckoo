@@ -38,7 +38,7 @@ $GOPATH/bin/gox \
     -os="${XC_OS}" \
     -arch="${XC_ARCH}" \
     -ldflags "-X main.GitCommit ${GIT_COMMIT}${GIT_DIRTY}" \
-    -output "pkg/{{.OS}}_{{.Arch}}/health" \
+    -output "pkg/{{.OS}}_{{.Arch}}/cuckoo" \
     .
 
 # Move all the compiled things to the $GOPATH/bin

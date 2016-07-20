@@ -1,7 +1,7 @@
 {
-	"ImportPath": "gitlab.full360.com/full360-south/health",
+	"ImportPath": "github.com/full360/cuckoo",
 	"GoVersion": "go1.6",
-	"GodepVersion": "v62",
+	"GodepVersion": "v74",
 	"Packages": [
 		"./..."
 	],
