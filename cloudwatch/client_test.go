@@ -40,7 +40,7 @@ func TestDefaultSessionConfig(t *testing.T) {
 		config := DefaultSessionConfig()
 
 		if *config.Region != c.expected {
-			t.Errorf("expected %q to be %q", config.Region, c.expected)
+			t.Errorf("expected %q to be %q", *config.Region, c.expected)
 		}
 
 		if c.export == true {
