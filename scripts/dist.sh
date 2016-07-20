@@ -28,12 +28,12 @@ rm -rf ./pkg/dist
 mkdir -p ./pkg/dist
 for FILENAME in $(find ./pkg -mindepth 1 -maxdepth 1 -type f); do
   FILENAME=$(basename $FILENAME)
-  cp ./pkg/${FILENAME} ./pkg/dist/health_${VERSION}_${FILENAME}
+  cp ./pkg/${FILENAME} ./pkg/dist/cuckoo_${VERSION}_${FILENAME}
 done
 
 # Make the checksums.
 pushd ./pkg/dist
-shasum -a256 * > ./health_${VERSION}_SHA256SUMS
+shasum -a256 * > ./cuckoo_${VERSION}_SHA256SUMS
 popd
 
 exit 0

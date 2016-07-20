@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/full360/health/log"
+	"github.com/full360/cuckoo/log"
 )
 
 var (
@@ -37,7 +37,7 @@ func init() {
 
 func main() {
 	if version {
-		fmt.Printf("health version: %s\n", Version)
+		fmt.Printf("cuckoo version: %s\n", Version)
 		return
 	}
 

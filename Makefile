@@ -1,5 +1,5 @@
 GOTOOLS=github.com/mitchellh/gox
-PACKAGES=$(shell go list ./... | grep -v '^gitlab.full360.com/full360-south/health/vendor/')
+PACKAGES=$(shell go list ./... | grep -v '^github.com/full360/cuckoo/vendor/')
 VETARGS?=-asmdecl -atomic -bool -buildtags -copylocks -methods \
          -nilfunc -printf -rangeloops -shift -structtags -unsafeptr
 VERSION?=$(shell awk -F\" '/^const Version/ { print $$2; exit }' version.go)
@@ -30,8 +30,8 @@ tools:
 	go get -u -v $(GOTOOLS)
 
 docker:
-	docker build -t full360/health:latest . \
-	&& docker tag -f full360/health:latest full360/health:$(VERSION) \
-	&& docker push full360/health
+	docker build -t full360/cuckoo:latest . \
+	&& docker tag -f full360/cuckoo:latest full360/health:$(VERSION) \
+	&& docker push full360/cuckoo
 
 .PHONY: all local build dist format tools docker

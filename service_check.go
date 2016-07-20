@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/full360/health/cloudwatch"
-	"github.com/full360/health/consul"
-	"github.com/full360/health/log"
+	"github.com/full360/cuckoo/cloudwatch"
+	"github.com/full360/cuckoo/consul"
+	"github.com/full360/cuckoo/log"
 )
 
 // serviceCheckConfig is used to represent the configuration of a service check
