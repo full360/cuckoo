@@ -17,7 +17,7 @@ func NewLogger() *Logger {
 func (l *Logger) SetLevel(level string) {
 	lvl, err := logrus.ParseLevel(level)
 	if err != nil {
-		l.Fatal(`Not a valid level: "%s"`, level)
+		l.Fatal(fmt.Sprintf("Not a valid level: %s", level))
 	}
 	l.Log.Level = lvl
 }

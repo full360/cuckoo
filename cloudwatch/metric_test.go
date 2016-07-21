@@ -30,7 +30,7 @@ func TestDefaultMetricConfig(t *testing.T) {
 		config := DefaultMetricConfig()
 
 		if !reflect.DeepEqual(config, c.expected.config) {
-			t.Errorf("expected %q to be %q", config, c.expected.config)
+			t.Errorf("expected %v to be %v", config, c.expected.config)
 		}
 	}
 }
@@ -93,7 +93,7 @@ func TestNewMetric(t *testing.T) {
 		}
 
 		if *metric.Data.MetricData[0].Value != c.expected.config.Value {
-			t.Errorf("expected %q to be %q", *metric.Data.MetricData[0].Value, c.expected.config.Value)
+			t.Errorf("expected %v to be %v", *metric.Data.MetricData[0].Value, c.expected.config.Value)
 		}
 
 		if *metric.Data.MetricData[0].Unit != c.expected.unit {
@@ -101,7 +101,7 @@ func TestNewMetric(t *testing.T) {
 		}
 
 		if !reflect.DeepEqual(metric.config, c.expected.config) {
-			t.Errorf("expected %q to be %q", metric.config, c.expected.config)
+			t.Errorf("expected %v to be %v", metric.config, c.expected.config)
 		}
 	}
 }
