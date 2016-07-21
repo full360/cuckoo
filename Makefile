@@ -29,9 +29,21 @@ format:
 tools:
 	go get -u -v $(GOTOOLS)
 
+vet:
+	@echo "--> Running go tool vet $(VETARGS) ."
+	@go list ./... \
+		| grep -v ^github.com/full360/cuckoo/vendor/ \
+		| cut -d '/' -f 4- \
+		| xargs -n1 \
+			go tool vet $(VETARGS) ;
+
+test: format
+	@$(MAKE) vet
+	@sh -c "'$(CURDIR)/scripts/test.sh'"
+
 docker:
 	docker build -t full360/cuckoo:latest . \
 	&& docker tag -f full360/cuckoo:latest full360/cuckoo:$(VERSION) \
 	&& docker push full360/cuckoo
 
-.PHONY: all local build dist format tools docker
+.PHONY: all local build dist format tools vet test docker
