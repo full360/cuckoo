@@ -1,8 +1,8 @@
 # Cuckoo
 
-Cuckoo, like the bird in the clock, is a very simple command line tool that
-polls [Consul][consul] for a count of healthy instances of a service and posts
-it to [AWS CloudWatch][cloudwatch] as a metric.
+Cuckoo, like the bird in the clock, is a very simple application that polls
+[Consul][consul] for a count of healthy instances of a service and posts it to
+[AWS CloudWatch][cloudwatch] as a metric.
 
 ## Usage
 
