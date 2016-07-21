@@ -5,7 +5,7 @@ VETARGS?=-asmdecl -atomic -bool -buildtags -copylocks -methods \
 VERSION?=$(shell awk -F\" '/^const Version/ { print $$2; exit }' version.go)
 
 # builds and generate package distributions
-all: build dist
+all: build
 
 # dev creates binaries for testing locally - these are put into ./bin and $GOPATH
 # NOTE: As we need to connect to a VPC using DNS and the golang dns does not
