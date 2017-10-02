@@ -5,6 +5,8 @@
 # This script builds the application from source for multiple platforms.
 set -e
 
+export CGO_ENABLED=0
+
 # Get the parent directory of where this script is.
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
@@ -18,7 +20,7 @@ GIT_COMMIT=$(git rev-parse HEAD)
 GIT_DIRTY=$(test -n "`git status --porcelain`" && echo "+CHANGES" || true)
 
 # Determine the arch/os combos we're building for
-XC_ARCH=${XC_ARCH:-"386 amd64 arm"}
+XC_ARCH=${XC_ARCH:-"386 amd64 arm arm64"}
 XC_OS=${XC_OS:-"solaris darwin freebsd linux windows"}
 
 # Delete the old dir
@@ -29,18 +31,19 @@ mkdir -p bin/
 
 # If it's dev mode, only build for ourself
 if [ "${LOCAL_BUILD}x" != "x" ]; then
-    export CGO_ENABLED=1
     XC_OS=$(go env GOOS)
     XC_ARCH=$(go env GOARCH)
 fi
 
 # Build!
 echo "==> Building..."
-$GOPATH/bin/gox \
+"`which gox`" \
     -os="${XC_OS}" \
     -arch="${XC_ARCH}" \
-    -ldflags "-X main.GitCommit ${GIT_COMMIT}${GIT_DIRTY}" \
+    -osarch="!darwin/arm !darwin/arm64" \
+    -ldflags "${GOLDFLAGS}" \
     -output "pkg/{{.OS}}_{{.Arch}}/cuckoo" \
+    -tags="${GOTAGS}" \
     .
 
 # Move all the compiled things to the $GOPATH/bin
