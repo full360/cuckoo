@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/full360/cuckoo/cloudwatch"
@@ -82,7 +81,6 @@ func (sc *serviceCheck) loopCheck() {
 func (sc *serviceCheck) check() error {
 	count, qm, err := sc.consul.Healthy()
 	if err != nil {
-		sc.logger.Error(fmt.Sprintf("Could not retrieve service count from Consul: %v", err))
 		return err
 	}
 	// debug logging for Consul request
@@ -94,7 +92,6 @@ func (sc *serviceCheck) check() error {
 
 	_, err = sc.metric.Put(float64(count))
 	if err != nil {
-		sc.logger.Error(fmt.Sprintf("Could not post metric to CloudWatch: %v", err))
 		return err
 	}
 	return nil
