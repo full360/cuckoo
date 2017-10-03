@@ -9,63 +9,51 @@ import (
 	"github.com/full360/cuckoo/log"
 )
 
-var (
-	version         bool
-	debug           bool
-	serviceName     string
-	serviceTag      string
-	metricName      string
-	metricNamespace string
-	block           time.Duration
-)
-
-func init() {
-	flag.BoolVar(&version, "version", false, "print version and exit")
-	flag.BoolVar(&debug, "d", false, "enables debug logging mode")
-	flag.StringVar(&serviceName, "service", "", "Consul name of the Service to check")
-	flag.StringVar(&serviceTag, "tag", "", "Consul tag of the Service to check")
-	flag.StringVar(&metricName, "metric-name", "service_monitoring", "CloudWatch metric data name")
-	flag.StringVar(&metricNamespace, "metric-namespace", "microservices", "CloudWatch metric namespace")
-	flag.DurationVar(&block, "block", 10*time.Minute, "Consul blocking query time")
+func main() {
+	version := flag.Bool("version", false, "print version and exit")
+	debug := flag.Bool("d", false, "enables debug logging mode")
+	serviceName := flag.String("service", "", "Consul name of the Service to check")
+	serviceTag := flag.String("tag", "", "Consul tag of the Service to check")
+	metricName := flag.String("metric-name", "service_monitoring", "CloudWatch metric data name")
+	metricNamespace := flag.String("metric-namespace", "microservices", "CloudWatch metric namespace")
+	block := flag.Duration("block", 10*time.Minute, "Consul blocking query time")
 
 	flag.Usage = func() {
 		flag.PrintDefaults()
 	}
 
 	flag.Parse()
-}
-
-func main() {
-	if version {
+	if *version {
 		fmt.Printf("cuckoo version: %s\n", Version)
 		return
 	}
 
-	if serviceName == "" {
+	if *serviceName == "" {
 		usageAndExit("Please enter a Service", 0)
 	}
 
-	if serviceTag == "" {
+	if *serviceTag == "" {
 		usageAndExit("Please enter a Service Tag", 0)
 	}
 
 	logger := log.NewLogger()
 
-	if debug {
+	if *debug {
 		logger.SetLevel("debug")
 	}
 
 	svcCheck, err := newServiceCheck(&serviceCheckConfig{
-		name:            serviceName,
-		tag:             serviceTag,
-		metricName:      metricName,
-		metricNamespace: metricNamespace,
-		blockTime:       block,
+		name:            *serviceName,
+		tag:             *serviceTag,
+		metricName:      *metricName,
+		metricNamespace: *metricNamespace,
+		blockTime:       *block,
 		logger:          logger,
 	})
 	if err != nil {
 		logger.Fatal(fmt.Sprintf("%v", err))
 	}
+
 	svcCheck.loopCheck()
 }
 
