@@ -66,19 +66,9 @@ func NewServiceCheck(svcConfig *ServiceCheckConfig) (*serviceCheck, error) {
 	return svcCheck, nil
 }
 
-// loopCheck does an infinite loop calling check
-func (sc *serviceCheck) LoopCheck() {
-	for {
-		err := sc.check()
-		if err != nil {
-			time.Sleep(10 * time.Second)
-		}
-	}
-}
-
-// check checks if a service is healthy and posts that data to a Cloudwatch
+// Check checks if a service is healthy and posts that data to a Cloudwatch
 // metric based on the service name and environment
-func (sc *serviceCheck) check() error {
+func (sc *serviceCheck) Check() error {
 	count, qm, err := sc.consul.Healthy()
 	if err != nil {
 		return err

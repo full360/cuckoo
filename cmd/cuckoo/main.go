@@ -57,7 +57,13 @@ func main() {
 		logger.Fatal(fmt.Sprintf("%v", err))
 	}
 
-	svcCheck.LoopCheck()
+	for {
+		err := svcCheck.Check()
+		if err != nil {
+			logger.Error(fmt.Sprintf("%v", err))
+			time.Sleep(10 * time.Second)
+		}
+	}
 }
 
 // usageAndExit prints the default usage flags and exits the application with
