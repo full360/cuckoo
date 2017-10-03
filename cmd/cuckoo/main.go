@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/full360/cuckoo"
 	"github.com/full360/cuckoo/log"
 )
 
@@ -42,19 +43,21 @@ func main() {
 		logger.SetLevel("debug")
 	}
 
-	svcCheck, err := newServiceCheck(&serviceCheckConfig{
-		name:            *serviceName,
-		tag:             *serviceTag,
-		metricName:      *metricName,
-		metricNamespace: *metricNamespace,
-		blockTime:       *block,
-		logger:          logger,
-	})
+	svcCheck, err := cuckoo.NewServiceCheck(
+		&cuckoo.ServiceCheckConfig{
+			Name:            *serviceName,
+			Tag:             *serviceTag,
+			MetricName:      *metricName,
+			MetricNamespace: *metricNamespace,
+			BlockTime:       *block,
+			Logger:          logger,
+		},
+	)
 	if err != nil {
 		logger.Fatal(fmt.Sprintf("%v", err))
 	}
 
-	svcCheck.loopCheck()
+	svcCheck.LoopCheck()
 }
 
 // usageAndExit prints the default usage flags and exits the application with

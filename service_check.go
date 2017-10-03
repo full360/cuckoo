@@ -1,4 +1,4 @@
-package main
+package cuckoo
 
 import (
 	"time"
@@ -9,13 +9,13 @@ import (
 )
 
 // serviceCheckConfig is used to represent the configuration of a service check
-type serviceCheckConfig struct {
-	name            string
-	tag             string
-	metricName      string
-	metricNamespace string
-	blockTime       time.Duration
-	logger          *log.Logger
+type ServiceCheckConfig struct {
+	Name            string
+	Tag             string
+	MetricName      string
+	MetricNamespace string
+	BlockTime       time.Duration
+	Logger          *log.Logger
 }
 
 // serviceCheck is used to represent a single service check with consul,
@@ -27,24 +27,24 @@ type serviceCheck struct {
 }
 
 // defaultServiceCheck returns a defaul service check config
-func defaultServiceCheck() *serviceCheckConfig {
-	return &serviceCheckConfig{
-		name:            "service",
-		tag:             "tag",
-		metricName:      "service_monitoring",
-		metricNamespace: "microservices",
-		blockTime:       10 * time.Minute,
-		logger:          log.NewLogger(),
+func DefaultServiceCheck() *ServiceCheckConfig {
+	return &ServiceCheckConfig{
+		Name:            "service",
+		Tag:             "tag",
+		MetricName:      "service_monitoring",
+		MetricNamespace: "microservices",
+		BlockTime:       10 * time.Minute,
+		Logger:          log.NewLogger(),
 	}
 }
 
 // newServiceCheck returns a new service check
-func newServiceCheck(svcConfig *serviceCheckConfig) (*serviceCheck, error) {
+func NewServiceCheck(svcConfig *ServiceCheckConfig) (*serviceCheck, error) {
 	consul, err := consul.NewCheck(&consul.CheckConfig{
-		Service:     svcConfig.name,
-		Tag:         svcConfig.tag,
+		Service:     svcConfig.Name,
+		Tag:         svcConfig.Tag,
 		PassingOnly: true,
-		BlockTime:   svcConfig.blockTime,
+		BlockTime:   svcConfig.BlockTime,
 	})
 	if err != nil {
 		return nil, err
@@ -53,21 +53,21 @@ func newServiceCheck(svcConfig *serviceCheckConfig) (*serviceCheck, error) {
 	svcCheck := &serviceCheck{
 		consul: consul,
 		metric: cloudwatch.NewMetric(&cloudwatch.MetricConfig{
-			Name:      svcConfig.metricName,
-			Namespace: svcConfig.metricNamespace,
+			Name:      svcConfig.MetricName,
+			Namespace: svcConfig.MetricNamespace,
 			Service: &cloudwatch.Service{
-				Name: svcConfig.name,
-				Env:  svcConfig.tag,
+				Name: svcConfig.Name,
+				Env:  svcConfig.Tag,
 			},
 			Value: 0,
 		}),
-		logger: svcConfig.logger,
+		logger: svcConfig.Logger,
 	}
 	return svcCheck, nil
 }
 
 // loopCheck does an infinite loop calling check
-func (sc *serviceCheck) loopCheck() {
+func (sc *serviceCheck) LoopCheck() {
 	for {
 		err := sc.check()
 		if err != nil {
