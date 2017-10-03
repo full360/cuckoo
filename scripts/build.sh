@@ -37,14 +37,17 @@ fi
 
 # Build!
 echo "==> Building..."
+cd "$DIR/cmd/cuckoo"
 "`which gox`" \
     -os="${XC_OS}" \
     -arch="${XC_ARCH}" \
     -osarch="!darwin/arm !darwin/arm64" \
-    -ldflags "${GOLDFLAGS}" \
-    -output "pkg/{{.OS}}_{{.Arch}}/cuckoo" \
+    -ldflags="${GOLDFLAGS}" \
+    -output="../../pkg/{{.OS}}_{{.Arch}}/cuckoo" \
     -tags="${GOTAGS}" \
     .
+
+cd "$DIR"
 
 # Move all the compiled things to the $GOPATH/bin
 GOPATH=${GOPATH:-$(go env GOPATH)}

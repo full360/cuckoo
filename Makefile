@@ -21,7 +21,7 @@ local: format
 	@LOCAL_BUILD=1 sh -c "'$(CURDIR)/scripts/build.sh'"
 
 # all builds binaries for all targets
-build: tools
+build: format
 	@mkdir -p bin/
 	@sh -c "'$(CURDIR)/scripts/build.sh'"
 
