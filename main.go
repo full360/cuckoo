@@ -29,11 +29,11 @@ func main() {
 	}
 
 	if *serviceName == "" {
-		usageAndExit("Please enter a Service", 0)
+		usageAndExit("Please enter a Service", 1)
 	}
 
 	if *serviceTag == "" {
-		usageAndExit("Please enter a Service Tag", 0)
+		usageAndExit("Please enter a Service Tag", 1)
 	}
 
 	logger := log.NewLogger()
