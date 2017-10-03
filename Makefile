@@ -4,6 +4,13 @@ VETARGS?=-asmdecl -atomic -bool -buildtags -copylocks -methods \
          -nilfunc -printf -rangeloops -shift -structtags -unsafeptr
 VERSION?=$(shell awk -F\" '/^const Version/ { print $$2; exit }' version.go)
 
+# Get the git commit
+GIT_COMMIT=$(shell git rev-parse --short HEAD)
+GIT_DIRTY=$(shell test -n "`git status --porcelain`" && echo "+CHANGES" || true)
+GIT_DESCRIBE=$(shell git describe --tags --always)
+GIT_IMPORT=github.com/hashicorp/consul/version
+GOLDFLAGS=-X $(GIT_IMPORT).GitCommit=$(GIT_COMMIT)$(GIT_DIRTY) -X $(GIT_IMPORT).GitDescribe=$(GIT_DESCRIBE)
+
 # builds and generate package distributions
 all: build
 
