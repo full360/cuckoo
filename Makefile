@@ -2,7 +2,7 @@ GOTOOLS=github.com/mitchellh/gox
 PACKAGES=$(shell go list ./... | grep -v '^github.com/full360/cuckoo/vendor/')
 VETARGS?=-asmdecl -atomic -bool -buildtags -copylocks -methods \
          -nilfunc -printf -rangeloops -shift -structtags -unsafeptr
-VERSION?=$(shell awk -F\" '/^const Version/ { print $$2; exit }' version.go)
+VERSION?=$(shell awk -F\" '/^const Version/ { print $$2; exit }' cmd/cuckoo/version.go)
 
 # Get the git commit
 GIT_COMMIT=$(shell git rev-parse --short HEAD)
